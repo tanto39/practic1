@@ -8,7 +8,7 @@ const cors = require("cors");
 const fs = require('fs');
 const path = require('path');
 const cluster = require('cluster');
-const numCPUs = require('os').cpus().length;
+const numCPUs = 4; //require('os').cpus().length;
 const SERVER_HOST = "http://localhost:3000/";
 
 app.use(cors());
