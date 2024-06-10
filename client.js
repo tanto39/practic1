@@ -18,8 +18,11 @@ ws.addEventListener("message", async (data) => {
     let contentDiv = document.querySelector("#content");
     let contentDivBtn = document.querySelector("#contentBtn");
 
-    // Отображение URL
     urlsDiv.innerHTML = "";
+    contentDiv.innerHTML = "";
+    contentDivBtn.innerHTML = '';
+
+    // Отображение URL
     if (urls.length > 0) {
       urls.forEach((urlData, index) => {
         let buttonUrl = document.createElement("button");
