@@ -1,0 +1,19 @@
+{
+  "name": "server-app",
+  "version": "1.0.0",
+  "description": "My WebSocket Server Application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "ws": "^8.2.3",
+    "http": "0.0.1-security",
+    "cors": "^2.8.5",
+    "path": "^0.12.7",
+    "fs": "0.0.1-security",
+    "cluster": "^0.0.1",
+    "os": "^0.1.1"
+  }
+}

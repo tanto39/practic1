@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <title>Клиент</title>
+  <link href="./css/style.css" rel="stylesheet" />
+</head>
+<body>
+  <div class="main">
+    <h1>Клиент</h1>
+    <p>Введите ключевое слово (доступные ключевые слова images, text). Далее выберите url из списка для просмотра загруженного контента.</p>
+    
+    <div class="wrap-block">
+      <input type="text" id="keyword" placeholder="Введите ключевое слово">
+      <button onclick="sendKeyword()" class="send">Получить список url</button>
+    </div>
+
+    <p>Список url:</p>
+    <div id="urls"></div>
+    <div id="status"></div>
+    <div id="contentBtn"></div>
+    <div id="content"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script src="./client.js"></script>
+</body>
+</html>
