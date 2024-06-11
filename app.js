@@ -8,23 +8,22 @@ const cors = require("cors");
 const fs = require('fs');
 const path = require('path');
 const cluster = require('cluster');
-const numCPUs = 4; //require('os').cpus().length;
-const SERVER_HOST = "http://localhost:3000/";
+const Throttle = require('stream-throttle').Throttle;
+const configApp = require('./config');
 
 app.use(cors());
 app.use('/content', express.static('./content'));
 
 let keywords = {
-  "images": [`${SERVER_HOST}content/cat-1.jpg`, `${SERVER_HOST}content/cat-2.jpg`],
-  "text": [`${SERVER_HOST}content/text1.txt`, `${SERVER_HOST}content/text2.txt`]
+  "images": [`${configApp.server_host}content/cat-1.jpg`, `${configApp.server_host}content/cat-2.jpg`],
+  "text": [`${configApp.server_host}content/text1.txt`, `${configApp.server_host}content/text2.txt`]
 };
 
 if (cluster.isMaster) {
-  console.log(numCPUs);
   console.log(`Master ${process.pid} is running`);
 
   // Fork workers.
-  for (let i = 0; i < numCPUs; i++) {
+  for (let i = 0; i < configApp.numCPUs; i++) {
     cluster.fork();
   }
 
@@ -34,16 +33,18 @@ if (cluster.isMaster) {
 } else {
   wss.on('connection', (ws) => {
     ws.on('message', (message) => {
-      console.log(numCPUs);
       let urls = keywords[message];
       if(urls) {
         let data = urls.map(url => {
-          let filePath = path.join(__dirname, url.replace(SERVER_HOST, '/'));
+          let filePath = path.join(__dirname, url.replace(configApp.server_host, '/'));
           let stats = fs.statSync(filePath);
+          let readStream = fs.createReadStream(filePath);
+          let throttle = new Throttle({rate: configApp.speed_stream}); 
+          readStream.pipe(throttle);
           return {
             url: url,
             size: stats.size,
-            threads: numCPUs
+            threads: configApp.numCPUs
           };
         });
         ws.send(JSON.stringify(data));

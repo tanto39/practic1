@@ -11,6 +11,10 @@ h1{
   padding: 0.5rem 0;
 }
 
+p{
+  margin-top: 0.5rem;
+}
+
 .main {
   margin: 1rem;
   padding: 1rem;
@@ -39,9 +43,6 @@ button.send:hover {
   background: #bddcfe;
 }
 
-#urls {
-}
-
 #urls button{
   display: block;
   padding: 0.5rem 1rem;
@@ -61,13 +62,15 @@ button.send:hover {
   white-space: pre-wrap;
   font-family: monospace;
 }
-#contentBtn button {
+#contentList button {
+  display: block;
   padding: 0.5rem 1rem;
+  margin: 0.2rem 0 0 0;
   background: #d9d9d9;
   border: 1px solid #ababab;
   border-radius: 0.5rem;
   cursor: pointer;
 }
-#contentBtn button:hover {
+#contentList button:hover {
   background: #ccc;
 }

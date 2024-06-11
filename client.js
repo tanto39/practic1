@@ -15,63 +15,60 @@ ws.addEventListener("message", async (data) => {
     let urls = JSON.parse(data.data);
     let urlsDiv = document.querySelector("#urls");
     let statusDiv = document.querySelector("#status");
+    let contentListDiv = document.querySelector("#contentList");
     let contentDiv = document.querySelector("#content");
-    let contentDivBtn = document.querySelector("#contentBtn");
 
     urlsDiv.innerHTML = "";
     contentDiv.innerHTML = "";
-    contentDivBtn.innerHTML = '';
 
-    // Отображение URL
+    // список url
     if (urls.length > 0) {
       urls.forEach((urlData, index) => {
         let buttonUrl = document.createElement("button");
         buttonUrl.textContent = urlData.url;
-        buttonUrl.onclick = () => downloadContent(urlData, index);
-        urlsDiv.appendChild(buttonUrl);
+        buttonUrl.onclick = () => downloadContent(urlData);
+        urlsDiv.append(buttonUrl);
       });
     } else {
       alert("По данному ключевому слову не найдены url");
     }
 
-    async function downloadContent(urlData, index) {
-      contentDiv.innerHTML = '';
+    // скачивание контента
+    async function downloadContent(urlData) {
       let fileExt = urlData.url.match(/\.([^.]+)$|$/)[1];
-      let responseType = fileExt == 'jpg' ? 'blob' : 'text';
+      let responseType = fileExt == "jpg" ? "blob" : "text";
       try {
-        // Многопоточное скачивание с отслеживанием прогресса
         let response = await axios.get(urlData.url, {
           responseType: responseType,
           onDownloadProgress: (progressEvent) => {
             let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            statusDiv.className = 'wrap-block';
+            statusDiv.className = "wrap-block";
             statusDiv.textContent = `Загружено: ${percentCompleted}%. Размер: ${urlData.size} байт. Количество потоков: ${urlData.threads}`;
           },
         });
 
-        // Сохранение в LocalStorage
-        if (fileExt == 'jpg') {
+        if (fileExt == "jpg") {
           let blobUrl = URL.createObjectURL(response.data);
-          localStorage.setItem(`content${index}`, blobUrl);
+          localStorage.setItem(`content${urlData.url}`, blobUrl);
         } else {
-          localStorage.setItem(`content${index}`, response.data);
+          localStorage.setItem(`content${urlData.url}`, response.data);
         }
-        
-        // Отображение загруженного контента
+
         let buttonContent = document.createElement("button");
-        buttonContent.textContent = `Показать контент`;
-        contentDivBtn.innerHTML = '';
-        contentDivBtn.appendChild(buttonContent);
+        buttonContent.textContent = `Показать контент ${urlData.url}`;
+        contentListDiv.append(buttonContent);
 
         buttonContent.onclick = () => {
-          let content = localStorage.getItem(`content${index}`);
-          contentDiv.innerHTML = '';
-          if (content.startsWith('blob:')) {
-            let img = document.createElement('img');
+          contentDiv.innerHTML = "";
+          let content = localStorage.getItem(`content${urlData.url}`);
+          if (content.startsWith("blob:")) {
+            let img = document.createElement("img");
             img.src = content;
-            contentDiv.appendChild(img);
+            contentDiv.append(img);
           } else {
-            contentDiv.textContent = content;
+            let text = document.createElement("p");
+            text.textContent = content;
+            contentDiv.append(text);
           }
         };
       } catch (error) {
